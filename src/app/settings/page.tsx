@@ -34,6 +34,12 @@ export default async function SettingsPage() {
               >
                 设置
               </Link>
+              <Link
+                href="/logout"
+                className="rounded-lg border border-[#d9d1c3] px-4 py-2 text-sm font-semibold text-[#64707d] transition hover:bg-[#f1eadf]"
+              >
+                退出
+              </Link>
             </div>
           </nav>
           <p className="max-w-3xl text-sm leading-7 text-[#64707d]">

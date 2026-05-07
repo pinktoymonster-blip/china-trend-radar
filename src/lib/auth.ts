@@ -2,7 +2,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 export const accessCookieName = "china_trend_radar_access";
-export const accessToken = "enabled";
+export const accessToken = "heyide-access-v2";
 export const accessPassword = "heyide";
 
 export async function requireAccess(nextPath = "/") {

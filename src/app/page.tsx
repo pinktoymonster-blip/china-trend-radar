@@ -45,6 +45,12 @@ export default async function Home() {
               >
                 设置
               </Link>
+              <Link
+                href="/logout"
+                className="rounded-lg border border-[#d9d1c3] px-4 py-2 text-sm font-semibold text-[#64707d] transition hover:bg-[#f1eadf]"
+              >
+                退出
+              </Link>
             </div>
           </nav>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
