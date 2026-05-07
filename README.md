@@ -51,9 +51,11 @@ Supabase 프로젝트를 만든 뒤 SQL Editor에서 `supabase/schema.sql`을 �
 ```bash
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
 SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+OPENAI_API_KEY=your_openai_api_key
+OPENAI_MODEL=gpt-5.2
 ```
 
-그 다음 Vercel에서 Redeploy하면 `/settings`의 수집 소스, 주기, 점수 가중치, 모니터링 범위, 리스크 규칙이 Supabase에 저장됩니다.
+그 다음 Vercel에서 Redeploy하면 `/settings`의 수집 소스, 주기, 점수 가중치, 모니터링 범위, 리스크 규칙이 Supabase에 저장됩니다. `/trends/[slug]` 상세 페이지에서는 `生成分析` 버튼으로 OpenAI 분석을 실행하고 `trend_enrichments`에 저장합니다.
 
 초기 트렌드 대시보드는 `src/lib/trends.ts`의 샘플 Top 100 데이터로 동작합니다. Supabase 설정 저장이 완료된 후에는 실제 수집 worker가 `trends`와 `trend_snapshots`에 데이터를 쌓도록 연결합니다.
 

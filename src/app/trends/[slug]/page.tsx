@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { TrendAnalysisPanel } from "@/components/trend-analysis-panel";
 import {
   findTrendBySlug,
   getTrendScore,
@@ -57,6 +58,7 @@ export default async function TrendDetail({
 
       <section className="mx-auto grid w-full max-w-5xl gap-5 px-5 py-6 sm:px-8 lg:grid-cols-[1.4fr_0.8fr] lg:px-10">
         <div className="space-y-5">
+          <TrendAnalysisPanel slug={slug} />
           <InfoBlock title="趋势摘要">{trend.summary}</InfoBlock>
           <InfoBlock title="信号判断">{trend.signal}</InfoBlock>
           <InfoBlock title="扩散路径">{trend.spreadPath}</InfoBlock>

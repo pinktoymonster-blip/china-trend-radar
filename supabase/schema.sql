@@ -102,6 +102,25 @@ create table if not exists public.collection_jobs (
   created_at timestamptz not null default now()
 );
 
+create table if not exists public.trend_enrichments (
+  trend_slug text primary key,
+  trend_id uuid references public.trends(id) on delete set null,
+  summary text not null,
+  why_trending text not null,
+  audience text not null,
+  spread_path text not null,
+  brand_fit text not null,
+  risk_level risk_level not null default 'medium',
+  risk_reason text not null,
+  content_angles text[] not null default '{}',
+  keywords text[] not null default '{}',
+  confidence numeric not null default 0,
+  model text not null,
+  analyzed_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  created_at timestamptz not null default now()
+);
+
 insert into public.collection_sources
   (source_id, platform, name, interval_minutes, enabled, sort_order)
 values
@@ -158,3 +177,5 @@ create index if not exists trend_snapshots_trend_id_captured_at_idx
   on public.trend_snapshots(trend_id, captured_at desc);
 create index if not exists collection_jobs_source_id_created_at_idx
   on public.collection_jobs(source_id, created_at desc);
+create index if not exists trend_enrichments_analyzed_at_idx
+  on public.trend_enrichments(analyzed_at desc);
