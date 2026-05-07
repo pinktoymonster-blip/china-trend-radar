@@ -10,7 +10,7 @@ import {
 } from "@/lib/settings";
 import { platformLabels } from "@/lib/trends";
 
-const intervalOptions = [15, 30, 60, 120];
+const availableCollectors = new Set(["douyin-hot", "weibo-hot", "bilibili-ranking", "baidu-index"]);
 const riskActions: Record<RiskRule["action"], string> = {
   downrank: "降权",
   exclude: "排除",
@@ -162,7 +162,9 @@ export function SettingsDashboard() {
         <div className="flex items-start justify-between gap-4">
           <div>
             <h2 className="text-lg font-semibold">采集来源</h2>
-            <p className="mt-1 text-sm text-[#64707d]">启用状态和采集周期会写入数据库。</p>
+            <p className="mt-1 text-sm text-[#64707d]">
+              当前自动采集为每日一次，也可以随时立即采集。
+            </p>
           </div>
           <button
             type="button"
@@ -175,42 +177,50 @@ export function SettingsDashboard() {
         </div>
 
         <div className="mt-5 divide-y divide-[#eee6dc]">
-          {settings.sources.map((source) => (
-            <div key={source.id} className="grid gap-3 py-4 sm:grid-cols-[1fr_118px_96px] sm:items-center">
-              <div>
-                <div className="font-semibold text-[#1f2933]">{source.name}</div>
-                <div className="mt-1 text-xs text-[#64707d]">
-                  平台：{platformLabels[source.platform]}
+          {settings.sources.map((source) => {
+            const collectorReady = availableCollectors.has(source.id);
+
+            return (
+              <div
+                key={source.id}
+                className="grid gap-3 py-4 sm:grid-cols-[1fr_126px_96px] sm:items-center"
+              >
+                <div>
+                  <div className="font-semibold text-[#1f2933]">{source.name}</div>
+                  <div className="mt-1 text-xs text-[#64707d]">
+                    平台：{platformLabels[source.platform]}
+                  </div>
                 </div>
+                <div className="text-xs font-semibold">
+                  <div
+                    className={
+                      collectorReady && source.enabled
+                        ? "rounded-md bg-[#edf4ef] px-3 py-2 text-[#2c6e49]"
+                        : "rounded-md bg-[#eee6dc] px-3 py-2 text-[#64707d]"
+                    }
+                  >
+                    {collectorReady
+                      ? source.enabled
+                        ? "当前自动：每日 1 次"
+                        : "当前自动：暂停"
+                      : "采集器：待接入"}
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  disabled={disabled || savingKey === `source:${source.id}` || !collectorReady}
+                  onClick={() => void updateSource(source, { enabled: !source.enabled })}
+                  className={
+                    collectorReady && source.enabled
+                      ? "h-10 rounded-md bg-[#edf4ef] px-3 text-sm font-semibold text-[#2c6e49] disabled:opacity-60"
+                      : "h-10 rounded-md bg-[#eee6dc] px-3 text-sm font-semibold text-[#64707d] disabled:opacity-60"
+                  }
+                >
+                  {collectorReady ? (source.enabled ? "启用" : "暂停") : "待接入"}
+                </button>
               </div>
-              <select
-                value={source.intervalMinutes}
-                disabled={disabled || savingKey === `source:${source.id}`}
-                onChange={(event) =>
-                  void updateSource(source, { intervalMinutes: Number(event.target.value) })
-                }
-                className="h-10 rounded-md border border-[#d9d1c3] bg-[#f1eadf] px-3 text-sm font-semibold text-[#6b5639] disabled:opacity-60"
-              >
-                {intervalOptions.map((minutes) => (
-                  <option key={minutes} value={minutes}>
-                    {minutes} 分钟
-                  </option>
-                ))}
-              </select>
-              <button
-                type="button"
-                disabled={disabled || savingKey === `source:${source.id}`}
-                onClick={() => void updateSource(source, { enabled: !source.enabled })}
-                className={
-                  source.enabled
-                    ? "h-10 rounded-md bg-[#edf4ef] px-3 text-sm font-semibold text-[#2c6e49] disabled:opacity-60"
-                    : "h-10 rounded-md bg-[#eee6dc] px-3 text-sm font-semibold text-[#64707d] disabled:opacity-60"
-                }
-              >
-                {source.enabled ? "启用" : "暂停"}
-              </button>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
