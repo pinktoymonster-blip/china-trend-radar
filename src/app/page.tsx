@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { requireAccess } from "@/lib/auth";
 import {
   lifecycleLabels,
   platformLabels,
@@ -16,9 +15,7 @@ const averageGrowth = Math.round(
 const breakoutCount = rankedTrends.filter((trend) => trend.lifecycle === "breakout").length;
 const riskCount = rankedTrends.filter((trend) => trend.riskLevel !== "low").length;
 
-export default async function Home() {
-  await requireAccess("/");
-
+export default function Home() {
   return (
     <main className="min-h-screen bg-[#f7f5f0] text-[#1f2933]">
       <header className="border-b border-[#d9d1c3] bg-[#fffdf8]">
@@ -44,12 +41,6 @@ export default async function Home() {
                 className="rounded-lg border border-[#d9d1c3] px-4 py-2 text-sm font-semibold text-[#64707d] transition hover:bg-[#f1eadf]"
               >
                 设置
-              </Link>
-              <Link
-                href="/logout"
-                className="rounded-lg border border-[#d9d1c3] px-4 py-2 text-sm font-semibold text-[#64707d] transition hover:bg-[#f1eadf]"
-              >
-                退出
               </Link>
             </div>
           </nav>
