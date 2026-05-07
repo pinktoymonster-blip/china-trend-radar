@@ -1,6 +1,5 @@
 import Link from "next/link";
 import {
-  getTrendScore,
   lifecycleLabels,
   platformLabels,
   rankedTrends,
@@ -58,20 +57,20 @@ export default function Home() {
         <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <h2 className="text-xl font-semibold">实时趋势排行</h2>
-            <p className="mt-1 text-sm text-[#64707d]">
-              排名由增长速度、当前热度、跨平台扩散、新鲜度和互动质量共同计算。
-            </p>
+              <p className="mt-1 text-sm text-[#64707d]">
+                按当前热度从高到低展示 Top 100，并保留每个趋势的来源链接。
+              </p>
           </div>
           <div className="flex flex-wrap gap-2 text-xs font-semibold text-[#64707d]">
             <span className="rounded-md bg-[#edf4ef] px-2 py-1 text-[#2c6e49]">自动采集</span>
             <span className="rounded-md bg-[#f1eadf] px-2 py-1">历史快照累计中</span>
-            <span className="rounded-md bg-[#fae8de] px-2 py-1 text-[#a34832]">模型可调</span>
+            <span className="rounded-md bg-[#fae8de] px-2 py-1 text-[#a34832]">Top 100</span>
           </div>
         </div>
 
         <div className="overflow-hidden rounded-lg border border-[#d9d1c3] bg-[#fffdf8]">
-          <div className="grid min-w-[980px] grid-cols-[72px_1.4fr_110px_110px_110px_120px_100px_100px] border-b border-[#e8dfd0] bg-[#f1eadf] px-4 py-3 text-xs font-semibold uppercase tracking-[0.08em] text-[#64707d]">
-            <span>评分</span>
+          <div className="grid min-w-[1160px] grid-cols-[64px_1.35fr_110px_110px_110px_120px_100px_100px_120px] border-b border-[#e8dfd0] bg-[#f1eadf] px-4 py-3 text-xs font-semibold uppercase tracking-[0.08em] text-[#64707d]">
+            <span>排名</span>
             <span>趋势</span>
             <span>平台</span>
             <span>类型</span>
@@ -79,19 +78,24 @@ export default function Home() {
             <span>热度</span>
             <span>增长</span>
             <span>风险</span>
+            <span>来源</span>
           </div>
           <div className="overflow-x-auto">
             {rankedTrends.map((trend) => (
-              <Link
-                href={`/trends/${trend.slug}`}
+              <div
                 key={trend.id}
-                className="grid min-w-[980px] grid-cols-[72px_1.4fr_110px_110px_110px_120px_100px_100px] items-center border-b border-[#eee6dc] px-4 py-4 text-sm transition last:border-b-0 hover:bg-[#faf3e8]"
+                className="grid min-w-[1160px] grid-cols-[64px_1.35fr_110px_110px_110px_120px_100px_100px_120px] items-center border-b border-[#eee6dc] px-4 py-4 text-sm transition last:border-b-0 hover:bg-[#faf3e8]"
               >
                 <span className="text-lg font-semibold text-[#a34832]">
-                  {getTrendScore(trend)}
+                  {trend.rank}
                 </span>
                 <span>
-                  <span className="block font-semibold text-[#1f2933]">{trend.title}</span>
+                  <Link
+                    href={`/trends/${trend.slug}`}
+                    className="block font-semibold text-[#1f2933] transition hover:text-[#a34832]"
+                  >
+                    {trend.title}
+                  </Link>
                   <span className="mt-1 block text-xs text-[#64707d]">
                     {trend.tags.join(" / ")}
                   </span>
@@ -108,7 +112,15 @@ export default function Home() {
                 <span className={riskClassName(trend.riskLevel)}>
                   {riskLabels[trend.riskLevel]}
                 </span>
-              </Link>
+                <a
+                  href={trend.sourceUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="font-semibold text-[#395f89] transition hover:text-[#a34832]"
+                >
+                  查看来源
+                </a>
+              </div>
             ))}
           </div>
         </div>
