@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import {
   findTrendBySlug,
   getTrendScore,
+  lifecycleLabels,
   platformLabels,
   riskLabels,
   trends,
@@ -32,22 +33,23 @@ export default async function TrendDetail({
       <section className="border-b border-[#d9d1c3] bg-[#fffdf8]">
         <div className="mx-auto w-full max-w-5xl px-5 py-6 sm:px-8 lg:px-10">
           <Link href="/" className="text-sm font-semibold text-[#395f89]">
-            ← Radar로 돌아가기
+            ← 返回趋势列表
           </Link>
           <div className="mt-6 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
             <div>
               <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#a34832]">
-                {platformLabels[trend.platform]} · {typeLabels[trend.type]}
+                {platformLabels[trend.platform]} · {typeLabels[trend.type]} ·{" "}
+                {lifecycleLabels[trend.lifecycle]}
               </p>
               <h1 className="mt-3 text-3xl font-semibold tracking-normal sm:text-5xl">
-                {trend.titleKr}
+                {trend.title}
               </h1>
-              <p className="mt-3 text-xl text-[#64707d]">{trend.titleCn}</p>
+              <p className="mt-3 text-base text-[#64707d]">{trend.sourceTitle}</p>
             </div>
             <div className="grid w-full grid-cols-3 gap-2 sm:w-[360px]">
-              <DetailMetric label="Score" value={`${getTrendScore(trend)}`} />
-              <DetailMetric label="Rank" value={`#${trend.rank}`} />
-              <DetailMetric label="Risk" value={riskLabels[trend.riskLevel]} />
+              <DetailMetric label="评分" value={`${getTrendScore(trend)}`} />
+              <DetailMetric label="排名" value={`#${trend.rank}`} />
+              <DetailMetric label="风险" value={riskLabels[trend.riskLevel]} />
             </div>
           </div>
         </div>
@@ -55,15 +57,16 @@ export default async function TrendDetail({
 
       <section className="mx-auto grid w-full max-w-5xl gap-5 px-5 py-6 sm:px-8 lg:grid-cols-[1.4fr_0.8fr] lg:px-10">
         <div className="space-y-5">
-          <InfoBlock title="요약">{trend.summaryKr}</InfoBlock>
-          <InfoBlock title="왜 뜨는가">{trend.whyTrending}</InfoBlock>
-          <InfoBlock title="사용 패턴">{trend.usagePattern}</InfoBlock>
+          <InfoBlock title="趋势摘要">{trend.summary}</InfoBlock>
+          <InfoBlock title="信号判断">{trend.signal}</InfoBlock>
+          <InfoBlock title="扩散路径">{trend.spreadPath}</InfoBlock>
+          <InfoBlock title="运营备注">{trend.operatorNote}</InfoBlock>
 
           <div className="rounded-lg border border-[#d9d1c3] bg-[#fffdf8] p-5">
-            <h2 className="text-sm font-semibold text-[#1f2933]">콘텐츠 아이디어</h2>
+            <h2 className="text-sm font-semibold text-[#1f2933]">样本信号</h2>
             <ul className="mt-4 space-y-3 text-sm leading-6 text-[#64707d]">
-              {trend.contentIdeas.map((idea) => (
-                <li key={idea}>{idea}</li>
+              {trend.sampleSignals.map((signal) => (
+                <li key={signal}>{signal}</li>
               ))}
             </ul>
           </div>
@@ -71,17 +74,17 @@ export default async function TrendDetail({
 
         <aside className="space-y-5">
           <div className="rounded-lg border border-[#d9d1c3] bg-[#fffdf8] p-5">
-            <h2 className="text-sm font-semibold text-[#1f2933]">수집 정보</h2>
+            <h2 className="text-sm font-semibold text-[#1f2933]">数据快照</h2>
             <dl className="mt-4 space-y-3 text-sm">
-              <Meta label="상승률" value={`+${Math.round(trend.growthRate * 100)}%`} />
-              <Meta label="열도" value={trend.heat.toLocaleString("ko-KR")} />
-              <Meta label="교차 플랫폼" value={`${trend.crossPlatformCount}개`} />
-              <Meta label="최초 발견" value={trend.firstSeenAt} />
+              <Meta label="增长率" value={`+${Math.round(trend.growthRate * 100)}%`} />
+              <Meta label="当前热度" value={trend.heat.toLocaleString("zh-CN")} />
+              <Meta label="跨平台" value={`${trend.crossPlatformCount} 个`} />
+              <Meta label="首次发现" value={trend.firstSeenAt} />
             </dl>
           </div>
 
           <div className="rounded-lg border border-[#d9d1c3] bg-[#fffdf8] p-5">
-            <h2 className="text-sm font-semibold text-[#1f2933]">태그</h2>
+            <h2 className="text-sm font-semibold text-[#1f2933]">标签</h2>
             <div className="mt-4 flex flex-wrap gap-2">
               {trend.tags.map((tag) => (
                 <span
@@ -100,7 +103,7 @@ export default async function TrendDetail({
             target="_blank"
             rel="noreferrer"
           >
-            원본 소스 열기
+            打开来源
           </a>
         </aside>
       </section>
