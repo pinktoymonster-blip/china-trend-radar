@@ -1,10 +1,13 @@
 import Link from "next/link";
+import { requireAccess } from "@/lib/auth";
 import { platformLabels, scoringWeights, sourceSettings } from "@/lib/trends";
 
 const excludedKeywords = ["政治敏感", "灾难事故", "未成年人争议", "品牌负面"];
 const trackedCategories = ["热梗", "挑战", "BGM", "流行语", "消费趋势", "二创内容"];
 
-export default function SettingsPage() {
+export default async function SettingsPage() {
+  await requireAccess("/settings");
+
   return (
     <main className="min-h-screen bg-[#f7f5f0] text-[#1f2933]">
       <header className="border-b border-[#d9d1c3] bg-[#fffdf8]">

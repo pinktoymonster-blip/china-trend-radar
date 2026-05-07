@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { requireAccess } from "@/lib/auth";
 import {
   lifecycleLabels,
   platformLabels,
@@ -15,7 +16,9 @@ const averageGrowth = Math.round(
 const breakoutCount = rankedTrends.filter((trend) => trend.lifecycle === "breakout").length;
 const riskCount = rankedTrends.filter((trend) => trend.riskLevel !== "low").length;
 
-export default function Home() {
+export default async function Home() {
+  await requireAccess("/");
+
   return (
     <main className="min-h-screen bg-[#f7f5f0] text-[#1f2933]">
       <header className="border-b border-[#d9d1c3] bg-[#fffdf8]">

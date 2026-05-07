@@ -1,9 +1,6 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-
-const accessCookieName = "china_trend_radar_access";
-const accessToken = "enabled";
-const password = "heyide";
+import { accessCookieName, accessPassword, accessToken } from "@/lib/auth";
 
 async function unlock(formData: FormData) {
   "use server";
@@ -12,7 +9,7 @@ async function unlock(formData: FormData) {
   const nextPath = String(formData.get("next") ?? "/");
   const safeNextPath = nextPath.startsWith("/") && !nextPath.startsWith("//") ? nextPath : "/";
 
-  if (submittedPassword !== password) {
+  if (submittedPassword !== accessPassword) {
     redirect(`/login?error=1&next=${encodeURIComponent(safeNextPath)}`);
   }
 

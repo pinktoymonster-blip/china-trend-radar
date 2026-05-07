@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { requireAccess } from "@/lib/auth";
 import {
   findTrendBySlug,
   getTrendScore,
@@ -22,6 +23,8 @@ export default async function TrendDetail({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
+  await requireAccess(`/trends/${slug}`);
+
   const trend = findTrendBySlug(slug);
 
   if (!trend) {
