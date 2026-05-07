@@ -46,12 +46,22 @@ OPENAI_API_KEY=
 
 Supabase 프로젝트를 만든 뒤 SQL Editor에서 `supabase/schema.sql`을 실행하면 됩니다.
 
-초기 MVP는 `src/lib/trends.ts`의 샘플 데이터로 동작합니다. Supabase 연결 후에는 이 파일을 DB fetch로 교체합니다.
+설정 저장을 활성화하려면 Vercel Environment Variables에 아래 값을 추가합니다.
+
+```bash
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+```
+
+그 다음 Vercel에서 Redeploy하면 `/settings`의 수집 소스, 주기, 점수 가중치, 모니터링 범위, 리스크 규칙이 Supabase에 저장됩니다.
+
+초기 트렌드 대시보드는 `src/lib/trends.ts`의 샘플 Top 100 데이터로 동작합니다. Supabase 설정 저장이 완료된 후에는 실제 수집 worker가 `trends`와 `trend_snapshots`에 데이터를 쌓도록 연결합니다.
 
 ## Next Steps
 
 1. Supabase 프로젝트 생성
 2. `supabase/schema.sql` 실행
-3. 수동 등록 폼 구현
+3. Vercel Environment Variables에 Supabase 키 추가
 4. Railway collector 서비스 생성
 5. Weibo/Bilibili/Baidu 핫리스트 수집기 추가
+6. 대시보드를 Supabase `trends` 데이터로 교체
