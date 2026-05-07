@@ -1,21 +1,16 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { TrendAnalysisPanel } from "@/components/trend-analysis-panel";
+import { getTrendBySlug } from "@/lib/trend-store";
 import {
-  findTrendBySlug,
   getTrendScore,
   lifecycleLabels,
   platformLabels,
   riskLabels,
-  trends,
   typeLabels,
 } from "@/lib/trends";
 
-export function generateStaticParams() {
-  return trends.map((trend) => ({
-    slug: trend.slug,
-  }));
-}
+export const dynamic = "force-dynamic";
 
 export default async function TrendDetail({
   params,
@@ -23,7 +18,7 @@ export default async function TrendDetail({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const trend = findTrendBySlug(slug);
+  const trend = await getTrendBySlug(slug);
 
   if (!trend) {
     notFound();

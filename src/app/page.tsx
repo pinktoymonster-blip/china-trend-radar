@@ -1,21 +1,25 @@
 import Link from "next/link";
+import { getDashboardTrends } from "@/lib/trend-store";
 import {
   lifecycleLabels,
   platformLabels,
-  rankedTrends,
   riskLabels,
   typeLabels,
 } from "@/lib/trends";
 
-const totalHeat = rankedTrends.reduce((sum, trend) => sum + trend.heat, 0);
-const averageGrowth = Math.round(
-  (rankedTrends.reduce((sum, trend) => sum + trend.growthRate, 0) / rankedTrends.length) *
-    100,
-);
-const breakoutCount = rankedTrends.filter((trend) => trend.lifecycle === "breakout").length;
-const riskCount = rankedTrends.filter((trend) => trend.riskLevel !== "low").length;
+export const dynamic = "force-dynamic";
 
-export default function Home() {
+export default async function Home() {
+  const dashboardTrends = await getDashboardTrends();
+  const totalHeat = dashboardTrends.reduce((sum, trend) => sum + trend.heat, 0);
+  const averageGrowth = Math.round(
+    (dashboardTrends.reduce((sum, trend) => sum + trend.growthRate, 0) /
+      Math.max(dashboardTrends.length, 1)) *
+      100,
+  );
+  const breakoutCount = dashboardTrends.filter((trend) => trend.lifecycle === "breakout").length;
+  const riskCount = dashboardTrends.filter((trend) => trend.riskLevel !== "low").length;
+
   return (
     <main className="min-h-screen bg-[#f7f5f0] text-[#1f2933]">
       <header className="border-b border-[#d9d1c3] bg-[#fffdf8]">
@@ -45,7 +49,7 @@ export default function Home() {
             </div>
           </nav>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            <Metric label="今日监测趋势" value={`${rankedTrends.length}`} />
+            <Metric label="今日监测趋势" value={`${dashboardTrends.length}`} />
             <Metric label="总热度信号" value={formatCompact(totalHeat)} />
             <Metric label="平均增长" value={`+${averageGrowth}%`} />
             <Metric label="需重点观察" value={`${breakoutCount + riskCount}`} />
@@ -81,7 +85,7 @@ export default function Home() {
             <span>来源</span>
           </div>
           <div className="overflow-x-auto">
-            {rankedTrends.map((trend) => (
+            {dashboardTrends.map((trend) => (
               <div
                 key={trend.id}
                 className="grid min-w-[1160px] grid-cols-[64px_1.35fr_110px_110px_110px_120px_100px_100px_120px] items-center border-b border-[#eee6dc] px-4 py-4 text-sm transition last:border-b-0 hover:bg-[#faf3e8]"

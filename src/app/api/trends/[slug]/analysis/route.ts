@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { analyzeTrendWithOpenAI, type TrendAnalysis } from "@/lib/openai-analysis";
 import { isSupabaseConfigured, supabaseRest } from "@/lib/supabase-rest";
-import { findTrendBySlug } from "@/lib/trends";
+import { getTrendBySlug } from "@/lib/trend-store";
 
 export const dynamic = "force-dynamic";
 
@@ -58,7 +58,7 @@ export async function POST(
   { params }: { params: Promise<{ slug: string }> },
 ) {
   const { slug } = await params;
-  const trend = findTrendBySlug(slug);
+  const trend = await getTrendBySlug(slug);
 
   if (!trend) {
     return NextResponse.json({ error: "Trend not found." }, { status: 404 });

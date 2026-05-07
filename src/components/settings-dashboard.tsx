@@ -21,6 +21,7 @@ export function SettingsDashboard() {
   const [settings, setSettings] = useState<RadarSettings>(defaultSettings);
   const [loading, setLoading] = useState(true);
   const [savingKey, setSavingKey] = useState("");
+  const [collecting, setCollecting] = useState(false);
   const [message, setMessage] = useState("");
 
   useEffect(() => {
@@ -103,6 +104,38 @@ export function SettingsDashboard() {
     await saveSetting("riskRule", rule.key, changes);
   }
 
+  async function runCollection() {
+    setCollecting(true);
+    setMessage("");
+
+    try {
+      const response = await fetch("/api/collect", {
+        method: "POST",
+        headers: {
+          authorization: "Bearer heyide",
+        },
+      });
+      const data = (await response.json()) as {
+        totals?: { saved?: number; raw?: number; failed?: number; skipped?: number };
+        error?: string;
+      };
+
+      if (!response.ok) {
+        throw new Error(data.error || "采集失败");
+      }
+
+      setMessage(
+        `采集完成：保存 ${data.totals?.saved ?? 0} 条，原始信号 ${
+          data.totals?.raw ?? 0
+        } 条。失败 ${data.totals?.failed ?? 0}，跳过 ${data.totals?.skipped ?? 0}。`,
+      );
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "采集失败");
+    } finally {
+      setCollecting(false);
+    }
+  }
+
   const totalWeight = settings.scoringWeights.reduce((sum, weight) => sum + weight.value, 0);
   const disabled = !settings.configured;
 
@@ -131,9 +164,14 @@ export function SettingsDashboard() {
             <h2 className="text-lg font-semibold">采集来源</h2>
             <p className="mt-1 text-sm text-[#64707d]">启用状态和采集周期会写入数据库。</p>
           </div>
-          <span className="rounded-md bg-[#edf4ef] px-2 py-1 text-xs font-semibold text-[#2c6e49]">
-            自动
-          </span>
+          <button
+            type="button"
+            disabled={disabled || collecting}
+            onClick={() => void runCollection()}
+            className="rounded-md bg-[#1f2933] px-3 py-2 text-xs font-semibold text-white disabled:opacity-60"
+          >
+            {collecting ? "采集中" : "立即采集"}
+          </button>
         </div>
 
         <div className="mt-5 divide-y divide-[#eee6dc]">
