@@ -1,36 +1,57 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# China Trend Radar
 
-## Getting Started
+중국 타겟 밈, 챌린지, BGM, 유행어, 소비 트렌드를 수집하고 큐레이션하는 웹 MVP입니다.
 
-First, run the development server:
+## Stack
+
+- Next.js App Router
+- TypeScript
+- Tailwind CSS
+- Supabase-ready Postgres schema
+- Vercel deployment target
+
+## Local
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+로컬 개발 서버는 기본적으로 `http://localhost:3100`에서 실행됩니다.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Verify
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run lint
+npm run build
+```
 
-## Learn More
+## Vercel Setup
 
-To learn more about Next.js, take a look at the following resources:
+1. GitHub에 이 폴더를 `china-trend-radar` 같은 이름으로 push합니다.
+2. Vercel 프로젝트에서 GitHub repo를 연결합니다.
+3. Framework preset은 `Next.js`로 둡니다.
+4. Build command는 기본값 `npm run build`를 사용합니다.
+5. Output directory는 비워둡니다.
+6. Environment Variables는 Supabase를 붙일 때 아래 값을 추가합니다.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
+OPENAI_API_KEY=
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Supabase
 
-## Deploy on Vercel
+Supabase 프로젝트를 만든 뒤 SQL Editor에서 `supabase/schema.sql`을 실행하면 됩니다.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+초기 MVP는 `src/lib/trends.ts`의 샘플 데이터로 동작합니다. Supabase 연결 후에는 이 파일을 DB fetch로 교체합니다.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Next Steps
+
+1. Supabase 프로젝트 생성
+2. `supabase/schema.sql` 실행
+3. 수동 등록 폼 구현
+4. Railway collector 서비스 생성
+5. Weibo/Bilibili/Baidu 핫리스트 수집기 추가
