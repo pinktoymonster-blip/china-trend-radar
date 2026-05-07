@@ -1,30 +1,3 @@
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
-import { accessCookieName, accessPassword, accessToken } from "@/lib/auth";
-
-async function unlock(formData: FormData) {
-  "use server";
-
-  const submittedPassword = String(formData.get("password") ?? "");
-  const nextPath = String(formData.get("next") ?? "/");
-  const safeNextPath = nextPath.startsWith("/") && !nextPath.startsWith("//") ? nextPath : "/";
-
-  if (submittedPassword !== accessPassword) {
-    redirect(`/login?error=1&next=${encodeURIComponent(safeNextPath)}`);
-  }
-
-  const cookieStore = await cookies();
-  cookieStore.set(accessCookieName, accessToken, {
-    httpOnly: true,
-    maxAge: 60 * 60 * 24 * 30,
-    path: "/",
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-  });
-
-  redirect(safeNextPath);
-}
-
 export default async function LoginPage({
   searchParams,
 }: {
@@ -44,7 +17,7 @@ export default async function LoginPage({
           请输入访问密码后继续查看趋势监测台。
         </p>
 
-        <form action={unlock} className="mt-6 grid gap-4">
+        <form action="/api/login" method="post" className="mt-6 grid gap-4">
           <input type="hidden" name="next" value={nextPath} />
           <label className="grid gap-2 text-sm font-semibold">
             密码
