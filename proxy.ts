@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from "next/server";
 const accessCookieName = "china_trend_radar_access";
 const accessToken = "enabled";
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (
